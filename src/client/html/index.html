@@ -15,10 +15,14 @@
     <div id="wrapper">
         <header>
             <h2>Queue a message to the server</h2>
-            <p>Send a message and each character will be broadcasted back to all clients with a 30 msg/s rate.</p>
+            <p>Send a message and each character will be broadcasted back to all clients with a rate of 30 msg/s.</p>
             <div>
-                <textarea id="msg-input" cols="50" rows="5" placeholder="Your message"></textarea>
+                <textarea id="msg-input" rows="5" placeholder="Your message"></textarea>
                 <button id="send-button">SEND</button>
+            </div>
+            <br>
+            <div id="incoming-msg">
+                <textarea id="msg-response-box" rows="8" placeholder="This box will populate with the server messages..." readonly></textarea>
             </div>
         </header>
     </div>

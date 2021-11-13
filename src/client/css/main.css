@@ -9,24 +9,35 @@ body {
 
 #wrapper {
     margin: auto;
-    width: 50%;
+    width: 60%;
     border: 5px solid #FFBB11;
     padding: 2em;
     min-width: 18em;
     text-align: center;
     position: absolute;
     top: 50%;
-    left: 25%;
+    left: 20%;
     transform: translateY(-50%);
 }
 
-#wrapper button, #wrapper textarea {
+#wrapper button, #msg-input {
     display: block;
     margin: 1em auto;
 }
 
-#wrapper textarea {
+#msg-input {
     background-color: #EEEEEEEE;
+    width: 75%;
+}
+
+#msg-response-box {
+    background-color: transparent;
+    width: 100%;
+    resize: none;
+}
+
+#msg-response-box:focus {
+    outline: none;
 }
 
 #bg {

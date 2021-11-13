@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <!-- Hello world -->
+
+<head>
+    <title>Socket.io Msg Granulizer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="A client-server application using socket.io that receives a message and sends its characters back one by one in an interval">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" href="/assets/favicon.png">
+</head>
+
+<body>
+    <div id="wrapper">
+        <header>
+            <h2>Queue a message to the server</h2>
+            <p>Send a message and each character will be broadcasted back to all clients with a 30 msg/s rate.</p>
+            <div>
+                <textarea id="msg-input" cols="50" rows="5" placeholder="Your message"></textarea>
+                <button id="send-button">SEND</button>
+            </div>
+        </header>
+    </div>
+
+    <div id="bg"></div>
+</body>
+
+</html>

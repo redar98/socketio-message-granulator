@@ -1,0 +1,38 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: inherit;
+    margin: 0;
+}
+
+#wrapper {
+    margin: auto;
+    width: 50%;
+    border: 5px solid #FFBB11;
+    padding: 2em;
+    min-width: 18em;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 25%;
+    transform: translateY(-50%);
+}
+
+#wrapper button, #wrapper textarea {
+    display: block;
+    margin: 1em auto;
+}
+
+#wrapper textarea {
+    background-color: #EEEEEEEE;
+}
+
+#bg {
+    width: inherit;
+    height: inherit;
+    background-image: linear-gradient(to top, rgba(19, 21, 25, 0.2), rgba(19, 21, 25, 0.15)), url("../assets/overlay.png");
+    background-size: auto, 256px 256px;
+    z-index: 2;
+}

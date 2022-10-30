@@ -3,21 +3,21 @@ html {
 }
 
 body {
-    height: inherit;
+    height: 100%;
     margin: 0;
 }
 
 #wrapper {
     margin: auto;
-    width: 60%;
-    border: 5px solid #FFBB11;
-    padding: 2em;
+    width: 80%;
+    padding: 4em 2em;
     min-width: 18em;
     text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 20%;
-    transform: translateY(-50%);
+}
+
+#wrapper > header {
+    border: 5px solid #FFBB11;
+    padding: 2em;
 }
 
 #wrapper button, #msg-input {
@@ -41,9 +41,19 @@ body {
 }
 
 #bg {
-    width: inherit;
-    height: inherit;
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background-image: linear-gradient(to top, rgba(19, 21, 25, 0.2), rgba(19, 21, 25, 0.15)), url("../assets/overlay.png");
     background-size: auto, 256px 256px;
-    z-index: 2;
+    z-index: -2;
+}
+
+#ping-counter {
+    position:absolute;
+    top:0;
+    right:0;
+    padding: 5px 10px;
+    background: #FFBB11;
+    color: midnightblue;
 }

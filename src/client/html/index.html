@@ -12,10 +12,16 @@
 </head>
 
 <body>
+    <div id="ping-counter">
+        Ping: <span></span>
+    </div>
+    
+    <div id="bg"></div>
+
     <div id="wrapper">
         <header>
             <h2>Queue a message to the server</h2>
-            <p>Send a message and each character will be broadcasted back to all clients with a rate of 30 msg/s.</p>
+            <p>Send a message and each character will be broadcasted back to all clients with a specific rate per second.</p>
             <div>
                 <textarea id="msg-input" rows="5" placeholder="Your message"></textarea>
                 <button id="send-button">SEND</button>
@@ -26,8 +32,6 @@
             </div>
         </header>
     </div>
-
-    <div id="bg"></div>
 </body>
 
 </html>

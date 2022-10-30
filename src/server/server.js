@@ -1,5 +1,5 @@
 const express = require("express");
-const { createServer } = require("http");
+const { createServer } = require("http"); // https requires key and permission files
 const { Server } = require("socket.io");
 const webpack = require("webpack");
 const webpackConfig = require("../../webpack.dev");
@@ -10,7 +10,12 @@ const MessageQueue = require('./messageQueue');
 const app = express();
 const port = 3000;
 const httpServer = createServer(app);
-const io = new Server(httpServer, {});
+const io = new Server(httpServer, {
+    cors: {
+        origin: "*" // provide legitimate server address
+    }
+});
+
 httpServer.listen(port);
 console.log(`[*] Server listening on ${port}`);
 

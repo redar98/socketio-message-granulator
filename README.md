@@ -1,4 +1,4 @@
-Name: ~ ~ TBD
+## Socket.io - Message Granulator
 
 Purpose: An application with client-server code for sending a message (paragraph) from a client to the server. All messages from different clients are combined inside the server and each character from this bunch is broadcasted to all clients one by one.
 

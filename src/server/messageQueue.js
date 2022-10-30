@@ -1,7 +1,8 @@
 const { MSG_TYPES } = require('../shared/constants');
+const updatesPerSecond = 30;
 
 class MessageQueue {
-    static #DELIMITER = " ";
+    static #DELIMITER = ' ';
     #sockets;
     #queue;
     #activeCharIndex;
@@ -10,7 +11,7 @@ class MessageQueue {
         this.#sockets = [];
         this.#queue = [];
         this.#activeCharIndex = 0;
-        setInterval(this.update.bind(this), 1_000 / 30);
+        setInterval(this.update.bind(this), 1_000 / updatesPerSecond);
     }
 
     addSocket(socket) {
@@ -21,13 +22,13 @@ class MessageQueue {
         this.#sockets.splice(this.#sockets.indexOf(socket), 1);
     }
 
-    queueMessage(msg) {
-        if (typeof msg == "string" && msg.length > 0) {
+    queueMessage(message) {
+        if (typeof message === 'string' && message.length > 0) {
             if (this.#queue.length > 0) {
-                msg = MessageQueue.#DELIMITER + msg;
+                message = MessageQueue.#DELIMITER + message;
             }
 
-            this.#queue.push(msg);
+            this.#queue.push(message);
         }
     }
 
@@ -36,19 +37,20 @@ class MessageQueue {
             return;
         }
 
+        let updatePack = this.#packUpdate();
         this.#sockets.forEach(socket => {
-            socket.emit(MSG_TYPES.UPDATE, this.packUpdate());
+            socket.emit(MSG_TYPES.UPDATE, updatePack);
         });
 
         this.#shiftNextCharacter();
     }
 
-    packUpdate() {
+    #packUpdate() {
         // we could just send the char code without packing it in an array,
         // but once there will be more data, it will all be packed in this
         // array to transmit the data as efficiently as possible.
         // Using Uint16 instead of Uint8 to cover extended char codes.
-        const charCode = this.#currentCharacter().charCodeAt();
+        let charCode = this.#currentCharacter().charCodeAt();
         return Uint16Array.of(charCode);
     }
 

@@ -1,66 +1,65 @@
-const express = require("express");
-const { createServer } = require("http"); // https requires key and permission files
-const { Server } = require("socket.io");
-const webpack = require("webpack");
-const webpackConfig = require("../../webpack.dev");
+const express = require('express');
+const { createServer } = require('http'); // https requires key and permission files
+const { Server } = require('socket.io');
+
+const webpack = require('webpack');
+const webpackConfig = require('../../webpack.dev');
 const webpackDevMiddleware = require('webpack-dev-middleware');
+
 const { MSG_TYPES } = require('../shared/constants');
 const MessageQueue = require('./messageQueue');
 
 const app = express();
 const port = 3000;
 const httpServer = createServer(app);
+const messageQueue = new MessageQueue();
 const io = new Server(httpServer, {
     cors: {
-        origin: "*" // provide legitimate server address
+        origin: '*' // provide legitimate server address
     }
 });
 
-httpServer.listen(port);
-console.log(`[*] Server listening on ${port}`);
+initializeServer();
 
-app.use(express.static("public"));
-if (process.env.NODE_ENV === "development") {
-    const compiler = webpack(webpackConfig);
-    app.use(webpackDevMiddleware(compiler));
-} else {
-    app.use(express.static("dist"));
+function initializeServer() {
+    httpServer.listen(port);
+    console.log(`[*] Server is listening on ${port}`);
+    
+    app.use(express.static('public'));
+    if (process.env.NODE_ENV === 'development') {
+        const compiler = webpack(webpackConfig);
+        app.use(webpackDevMiddleware(compiler));
+    } else {
+        app.use(express.static('dist'));
+    }
+
+    io.on(MSG_TYPES.CONNECTION, onConnection);
 }
 
-io.on("connection", (socket) => {
-    onConnect(socket);
-
-    socket.on("disconnect", onDisconnect);
-    socket.on(MSG_TYPES.PING, onPing);
-    socket.on(MSG_TYPES.MESSAGE, onMessage);
-});
-
-// Simulate Latency on responses
-function applyLatency(socket) {
-    const emitFn = socket.emit;
-    socket.emit = (...args) => setTimeout(() => {
-        emitFn.apply(socket, args);
-    }, Math.floor(Math.random() * 150));
-}
-
-const messageQueue = new MessageQueue();
-
-function onConnect(socket) {
+function onConnection(socket) {
     console.log(`[+] Connection occurred with ${socket.id}`);
     messageQueue.addSocket(socket);
-    // applyLatency(socket); This causes delivering messages in an unordered way...
+
+    socket.on(MSG_TYPES.DISCONNECT, () => onDisconnect(socket));
+    socket.on(MSG_TYPES.PING, () => onPing(socket));
+    socket.on(MSG_TYPES.MESSAGE, (message) => onMessage(socket, message));
 }
 
-function onDisconnect() {
-    console.log(`[-] Connection halted with ${this.id}`);
-    messageQueue.removeSocket(this);
+function onDisconnect(socket) {
+    console.log(`[-] Connection halted with ${socket.id}`);
+    messageQueue.removeSocket(socket);
 }
 
-function onPing() {
-    this.emit(MSG_TYPES.PONG);
+function onPing(socket) {
+    socket.emit(MSG_TYPES.PONG);
 }
 
-function onMessage(msg) {
-    console.log(`[ ] ${this.id} queued a message: "${msg}"`);
-    messageQueue.queueMessage(msg);
+function onMessage(socket, message) {
+    console.log(`${socket.id} queued: '${message}'`);
+    messageQueue.queueMessage(message);
 }
+
+/*
+io is server, socket is client. Calling io.emit() triggers this event on all
+sockets, while calling socket.emit() triggers an event on specific client.
+*/

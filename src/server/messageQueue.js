@@ -1,29 +1,21 @@
-const { MSG_TYPES } = require('../shared/constants');
 const updatesPerSecond = 30;
 
+// TODO: having TypeScript would bring better typing features
 class MessageQueue {
-    static #DELIMITER = ' ';
-    #sockets;
+    static #DELIMITER = " ";
+    #updateCallback;
     #queue;
     #activeCharIndex;
 
-    constructor() {
-        this.#sockets = [];
+    constructor(updateCallback) {
+        this.#updateCallback = updateCallback;
         this.#queue = [];
         this.#activeCharIndex = 0;
         setInterval(this.update.bind(this), 1_000 / updatesPerSecond);
     }
 
-    addSocket(socket) {
-        this.#sockets.push(socket);
-    }
-
-    removeSocket(socket) {
-        this.#sockets.splice(this.#sockets.indexOf(socket), 1);
-    }
-
     queueMessage(message) {
-        if (typeof message === 'string' && message.length > 0) {
+        if (typeof message === "string" && message.length > 0) {
             if (this.#queue.length > 0) {
                 message = MessageQueue.#DELIMITER + message;
             }
@@ -38,11 +30,8 @@ class MessageQueue {
         }
 
         let updatePack = this.#packUpdate();
-        this.#sockets.forEach(socket => {
-            socket.emit(MSG_TYPES.UPDATE, updatePack);
-        });
-
-        this.#shiftNextCharacter();
+        this.#updateCallback(updatePack);
+        this.#shiftToNextCharacter();
     }
 
     #packUpdate() {
@@ -55,14 +44,14 @@ class MessageQueue {
     }
 
     #nothingToSend() {
-        return this.#queue.length == 0 || this.#sockets.length == 0;
+        return this.#queue.length == 0;
     }
 
     #currentCharacter() {
         return this.#queue[0][this.#activeCharIndex];
     }
 
-    #shiftNextCharacter() {
+    #shiftToNextCharacter() {
         this.#activeCharIndex++;
 
         if (this.#activeCharIndex >= this.#queue[0].length) {

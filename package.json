@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "develop": "cross-env NODE_ENV=development node src/server/server.js",
-    "debug": "cross-env NODE_ENV=development DEBUG=engine,socket.io:client* node src/server/server.js",
+    "debug": "cross-env NODE_ENV=development DEBUG=engine,socket.io:client*,socket.io:server* node src/server/server.js",
     "start": "cross-env NODE_ENV=production node src/server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

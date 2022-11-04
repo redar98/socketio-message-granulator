@@ -12,7 +12,7 @@ const MessageQueue = require("./messageQueue");
 const app = express();
 const port = 3000;
 const httpServer = createServer(app);
-const messageQueue = new MessageQueue();
+const messageQueue = new MessageQueue((packet) => updateTick(packet));
 const io = new Server(httpServer, {
     cors: {
         origin: "*", // provide legitimate server address
@@ -27,7 +27,7 @@ function initializeServer() {
 
     app.use(express.static("public"));
     if (process.env.NODE_ENV === "development") {
-        const compiler = webpack(webpackConfig);
+        let compiler = webpack(webpackConfig);
         app.use(webpackDevMiddleware(compiler));
     } else {
         app.use(express.static("dist"));
@@ -38,7 +38,6 @@ function initializeServer() {
 
 function onConnection(socket) {
     console.log(`[+] Connection occurred with ${socket.id}`);
-    messageQueue.addSocket(socket);
 
     socket.on(MSG_TYPES.DISCONNECT, () => onDisconnect(socket));
     socket.on(MSG_TYPES.PING, (callback) => callback());
@@ -47,12 +46,15 @@ function onConnection(socket) {
 
 function onDisconnect(socket) {
     console.log(`[-] Connection halted with ${socket.id}`);
-    messageQueue.removeSocket(socket);
 }
 
 function onMessage(socket, message) {
     console.log(`${socket.id} queued: '${message}'`);
     messageQueue.queueMessage(message);
+}
+
+function updateTick(packet) {
+    io.emit(MSG_TYPES.UPDATE, packet);
 }
 
 /*

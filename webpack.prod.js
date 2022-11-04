@@ -8,4 +8,12 @@ module.exports = merge(common, {
   optimization: {
     minimizer: [new TerserJSPlugin({}), new CSSMinimizerAssetsPlugin()],
   },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'webpack-remove-debug'
+      }
+    ]
+  }
 });

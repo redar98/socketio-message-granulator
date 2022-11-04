@@ -4,7 +4,6 @@ module.exports = Object.freeze({
         CONNECT: 'connect', // client
         DISCONNECT: 'disconnect',
         PING: 'ping',
-        PONG: 'pong',
         MESSAGE: 'message',
         UPDATE: 'update',
     },

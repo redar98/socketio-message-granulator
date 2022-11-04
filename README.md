@@ -8,6 +8,8 @@ Client obtains a websocket connection with the server using socket.io library. S
 
 ## Development
 
+Server will provide clients with the home page and all necessary resources. Thus, correct server IP address should be declared in [client.js](src/client/client.js) *serverUrl* variable.
+
 Ensure your machine knows what Node and NPM is. Then run this on your local machine:
 
 ```bash

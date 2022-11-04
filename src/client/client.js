@@ -1,24 +1,26 @@
-import './css/main.css'
+import "./css/main.css";
 
-const { io } = require('socket.io-client');
-const { MSG_TYPES } = require('../shared/constants');
+const { io } = require("socket.io-client");
+const { MSG_TYPES } = require("../shared/constants");
 
-const serverUrl = 'http://192.168.1.180:3000'; // http(s) or wss server address
+const serverUrl = "http://192.168.1.180:3000"; // http(s) or ws(s) server address
 const socket = io(serverUrl);
 
-const pingField = document.querySelector('#ping-counter>span');
-const messageSendButton = document.getElementById('send-button');
-const messageInput = document.getElementById('msg-input');
-const msgResponseBox = document.getElementById('msg-response-box');
+const pingField = document.querySelector("#ping-counter>span");
+const messageSendButton = document.getElementById("send-button");
+const messageInput = document.getElementById("msg-input");
+const msgResponseBox = document.getElementById("msg-response-box");
 
 let pingRefreshTimer;
-let pingStartTime;
 
-socket.on(MSG_TYPES.CONNECT, onConnect);
-socket.on(MSG_TYPES.PONG, onPong);
-socket.on(MSG_TYPES.UPDATE, onUpdate);
-socket.on(MSG_TYPES.DISCONNECT, onDisconnect)
-messageSendButton.onclick = sendMessage;
+initializeClient();
+
+function initializeClient() {
+    socket.on(MSG_TYPES.CONNECT, onConnect);
+    socket.on(MSG_TYPES.UPDATE, onUpdate);
+    socket.on(MSG_TYPES.DISCONNECT, onDisconnect);
+    messageSendButton.onclick = sendMessage;
+}
 
 function onConnect() {
     console.log(`Client has connected with the server using id: ${socket.id}`);
@@ -26,14 +28,9 @@ function onConnect() {
 }
 
 function onDisconnect() {
-    console.log('Disconnected from the server.');
+    console.log("Disconnected from the server.");
     clearInterval(pingRefreshTimer);
-    setPingText('DISC');
-}
-
-function onPong() {
-    let latency = Date.now() - pingStartTime;
-    setPingText(`${latency}ms`);
+    setPingText("DISC");
 }
 
 function onUpdate(charCodeArray) {
@@ -50,8 +47,12 @@ function sendMessage() {
 }
 
 function ping() {
-    pingStartTime = Date.now();
-    socket.emit(MSG_TYPES.PING)
+    let start = Date.now();
+
+    socket.emit(MSG_TYPES.PING, () => {
+        let duration = Date.now() - start;
+        setPingText(`${duration}ms`);
+    });
 }
 
 function setPingText(text) {

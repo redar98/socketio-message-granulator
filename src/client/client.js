@@ -3,7 +3,7 @@ import "./css/main.css";
 const { io } = require("socket.io-client");
 const { MSG_TYPES } = require("../shared/constants");
 
-const serverUrl = "http://192.168.1.180:3000"; // http(s) or ws(s) server address
+const serverUrl = "localhost:3000"; // http(s) or ws(s) server address
 const socket = io(serverUrl);
 
 const pingField = document.querySelector("#ping-counter>span");

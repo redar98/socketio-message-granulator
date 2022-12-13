@@ -1,13 +1,13 @@
-const express = require("express");
-const { createServer } = require("http"); // https requires key and permission files
-const { Server } = require("socket.io");
+const express = require('express');
+const { createServer } = require('http'); // https requires key and permission files
+const { Server } = require('socket.io');
 
-const webpack = require("webpack");
-const webpackConfig = require("../../webpack.dev");
-const webpackDevMiddleware = require("webpack-dev-middleware");
+const webpack = require('webpack');
+const webpackConfig = require('../../webpack.dev');
+const webpackDevMiddleware = require('webpack-dev-middleware');
 
-const { MSG_TYPES } = require("../shared/constants");
-const MessageQueue = require("./messageQueue");
+const { MSG_TYPES } = require('../shared/constants');
+const MessageQueue = require('./messageQueue');
 
 const app = express();
 const port = 3000;
@@ -15,7 +15,7 @@ const httpServer = createServer(app);
 const messageQueue = new MessageQueue((packet) => updateTick(packet));
 const io = new Server(httpServer, {
     cors: {
-        origin: "*", // provide legitimate server address
+        origin: '*', // provide legitimate server address
     },
 });
 
@@ -25,12 +25,12 @@ function initializeServer() {
     httpServer.listen(port);
     console.log(`[*] Server is listening on ${port}`);
 
-    app.use(express.static("public"));
-    if (process.env.NODE_ENV === "development") {
+    app.use(express.static('public'));
+    if (process.env.NODE_ENV === 'development') {
         let compiler = webpack(webpackConfig);
         app.use(webpackDevMiddleware(compiler));
     } else {
-        app.use(express.static("dist"));
+        app.use(express.static('dist'));
     }
 
     io.on(MSG_TYPES.CONNECTION, onConnection);

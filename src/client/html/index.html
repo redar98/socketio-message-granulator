@@ -1,37 +1,27 @@
 <!DOCTYPE html>
 <html>
-    <!-- Hello world -->
+    <head>
+        <title>Socket.io Msg Granulizer</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+        <meta name="description" content="A client-server application using socket.io that receives a message and sends its characters back one by one in an interval"/>
+        <meta name="robots" content="index, follow"/>
+        <link rel="icon" href="/assets/favicon.png"/>
+    </head>
 
-<head>
-    <title>Socket.io Msg Granulizer</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="description" content="A client-server application using socket.io that receives a message and sends its characters back one by one in an interval">
-    <meta name="robots" content="index, follow">
-    <link rel="icon" href="/assets/favicon.png">
-</head>
+    <body>
+        <div id="background"></div>
 
-<body>
-    <div id="ping-counter">
-        Ping: <span></span>
-    </div>
-    
-    <div id="bg"></div>
+        <canvas id="game-canvas"></canvas>
 
-    <div id="wrapper">
-        <header>
-            <h2>Queue a message to the server</h2>
-            <p>Send a message and each character will be broadcasted back to all clients with a specific rate per second.</p>
-            <div>
-                <textarea id="msg-input" rows="5" placeholder="Your message"></textarea>
-                <button id="send-button">SEND</button>
-            </div>
-            <br>
-            <div id="incoming-msg">
-                <textarea id="msg-response-box" rows="8" placeholder="This box will populate with the server messages..." readonly></textarea>
-            </div>
-        </header>
-    </div>
-</body>
+        <div id="ping-counter">Ping: DISC</div>
+
+        <div id="start-panel">
+            <h1>Socket.io</h1>
+            <p>How should we call you?</p>
+            <input id="player-name" type="text" placeholder="Nickname"/>
+            <button id="start">START</button>
+        </div>
+    </body>
 
 </html>

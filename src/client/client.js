@@ -1,21 +1,26 @@
 import './css/main.css';
 
 import * as Networking from './networking';
+import SocketProfile from '../shared/SocketProfile';
 
 const pingField = getElement('ping-counter');
 const startPanel = getElement('start-panel');
 const startButton = getElement('start');
+const nicknameInput = getElement('player-name');
 
 initializeClient();
 
 function initializeClient() {
-    temporarilyDisableNickname();
-    startButton.addEventListener('click', () => start());
+    startButton.addEventListener('click', () => attemptStart());
     document.addEventListener('keyup', (e) => detectKeyEvent(e));
 }
 
-function start() {
-    Networking.connect(onConnect, onDisconnect);
+function attemptStart() {
+    let nickname = getValidNickname();
+
+    let profile = new SocketProfile(nickname);
+
+    Networking.connect(profile, onConnect, onDisconnect);
 }
 
 function onConnect() {
@@ -52,9 +57,11 @@ function getElement(id) {
     return document.getElementById(id);
 }
 
-function temporarilyDisableNickname() {
-    let nicknameInput = document.getElementById('player-name');
-    nicknameInput.value = 'undefined';
-    nicknameInput.style.cursor = 'not-allowed';
-    nicknameInput.toggleAttribute('readonly', true);
+function getValidNickname() {
+    if (nicknameInput.value.length < 3) {
+        nicknameInput.value = `Anon #${Math.floor(Math.random() * 1000)}`;
+    }
+
+    nicknameInput.value = nicknameInput.value.trim();
+    return nicknameInput.value;
 }

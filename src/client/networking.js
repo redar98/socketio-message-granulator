@@ -7,15 +7,17 @@ const socket = io(serverUrl, { autoConnect: false });
 
 let connectHandler;
 let disconnectHandler;
+let socketProfile;
 let pingRefreshTimer;
 
-socket.on(MSG_TYPES.CONNECT, onConnect);
-socket.on(MSG_TYPES.DISCONNECT, onDisconnect);
+socket.on(MSG_TYPES.CONNECT, sendInitialSocketData);
+socket.on(MSG_TYPES.DISCONNECT, (reason) => onDisconnect(reason));
 socket.on(MSG_TYPES.UPDATE, onUpdate);
 
-export function connect(connectCallback, disconnectCallback) {
+export function connect(profile, connectCallback, disconnectCallback) {
     connectHandler = connectCallback;
     disconnectHandler = disconnectCallback;
+    socketProfile = profile
     socket.open();
 }
 
@@ -23,15 +25,27 @@ export function disconnect() {
     socket.close();
 }
 
-function onConnect() {
-    console.log(`Client has connected with the server using id: ${socket.id}`);
+function onConnect(errorResponse) {
+    if (errorResponse) {
+        console.log(`Server rejected: ${errorResponse}`);
+        return;
+    }
+    
+    console.log(`Client was synced with the server. ${socket.id}`);
     connectHandler();
 }
 
-function onDisconnect() {
-    console.log('Disconnected from the server.');
+function onDisconnect(reason) {
+    // check https://socket.io/docs/v4/server-socket-instance/#disconnect for possible reasons
+    console.log(`Disconnected from the server: ${reason}`);
+    disconnect();
     stopPingCounter();
     disconnectHandler();
+}
+
+function sendInitialSocketData() {
+    // server could return some data as well (rank, money, etc.)
+    socket.emit(MSG_TYPES.INITIALIZE, socketProfile, onConnect);
 }
 
 function onUpdate(charCodeArray) {

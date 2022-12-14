@@ -7,6 +7,8 @@ const webpackConfig = require('../../webpack.dev');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 
 const { MSG_TYPES } = require('../shared/constants');
+const SocketProfile = require('../shared/socketProfile');
+const IdentityManager = require('./identityManager');
 const MessageQueue = require('./messageQueue');
 
 const app = express();
@@ -18,6 +20,7 @@ const io = new Server(httpServer, {
         origin: '*', // provide legitimate server address
     },
 });
+const identityManager = new IdentityManager();
 
 initializeServer();
 
@@ -39,12 +42,28 @@ function initializeServer() {
 function onConnection(socket) {
     console.log(`[+] Connection occurred with ${socket.id}`);
 
+    socket.on(MSG_TYPES.INITIALIZE, (socketProfile, callback) => setSocketProfile(socket, socketProfile, callback));
     socket.on(MSG_TYPES.DISCONNECT, () => onDisconnect(socket));
     socket.on(MSG_TYPES.PING, (callback) => callback());
     socket.on(MSG_TYPES.MESSAGE, (message) => onMessage(socket, message));
 }
 
+function setSocketProfile(socket, socketProfile, callback) {
+    if (!SocketProfile.validate(socketProfile)) {
+        console.log(`[X] Invalid socket profile from ${socket.id}`);
+        callback('INVALID');
+        terminateSocket(socket);
+        return;
+    }
+
+    identityManager.addSocketInfo(socket.id, socketProfile);
+    callback();
+
+    console.log(`[ ] Client '${socketProfile.nickname}' (${socket.id}) was synced`);
+}
+
 function onDisconnect(socket) {
+    identityManager.removeSocketInfo(socket.id);
     console.log(`[-] Connection halted with ${socket.id}`);
 }
 
@@ -55,6 +74,10 @@ function onMessage(socket, message) {
 
 function updateTick(packet) {
     io.emit(MSG_TYPES.UPDATE, packet);
+}
+
+function terminateSocket(socket) {
+    socket.disconnect();
 }
 
 /*

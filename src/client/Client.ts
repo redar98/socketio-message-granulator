@@ -1,12 +1,12 @@
 import './css/main.css';
 
-import * as Networking from './networking';
+import * as Networking from './Networking';
 import SocketProfile from '../shared/SocketProfile';
 
-const pingField = getElement('ping-counter');
-const startPanel = getElement('start-panel');
-const startButton = getElement('start');
-const nicknameInput = getElement('player-name');
+const pingField: HTMLElement = getElement('ping-counter');
+const startPanel: HTMLElement = getElement('start-panel');
+const startButton: HTMLButtonElement = getElement('start');
+const nicknameInput: HTMLInputElement = getElement('player-name');
 
 initializeClient();
 
@@ -43,21 +43,21 @@ function showStartPanel(visible = true) {
     }
 }
 
-function setPingText(value) {
+function setPingText(value: string) {
     pingField.textContent = `Ping: ${value}`;
 }
 
-function detectKeyEvent(key) {
+function detectKeyEvent(key: KeyboardEvent) {
     if (key.code === 'Escape') {
         Networking.disconnect();
     }
 }
 
-function getElement(id) {
-    return document.getElementById(id);
+function getElement<T>(id: string): T {
+    return document.getElementById(id) as T;
 }
 
-function getValidNickname() {
+function getValidNickname(): string {
     if (nicknameInput.value.length < 3) {
         nicknameInput.value = `Anon #${Math.floor(Math.random() * 1000)}`;
     }

@@ -1,21 +1,20 @@
-class ValidationUtils {
+import SocketProfile from '../../shared/SocketProfile';
 
-    static validateSocketProfile(socketProfile) {
+export default class ValidationUtils {
+    static validateSocketProfile(socketProfile: SocketProfile) {
         try {
             if (!socketProfile || !socketProfile.nickname) {
                 return false;
             }
 
             let nicknameLength = socketProfile.nickname.length;
-            if (typeof(socketProfile.nickname) != 'string' || nicknameLength < 3 || nicknameLength > 10) {
+            if (typeof socketProfile.nickname != 'string' || nicknameLength < 3 || nicknameLength > 10) {
                 return false;
             }
 
             return true;
-        } catch(err) {
+        } catch (err) {
             return false;
         }
     }
 }
-
-module.exports = ValidationUtils;

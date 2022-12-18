@@ -11,7 +11,7 @@ module.exports = merge(common, {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|ts)$/,
         loader: 'webpack-remove-debug'
       }
     ]

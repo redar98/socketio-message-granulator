@@ -1,20 +1,19 @@
-const express = require('express');
-const { createServer } = require('http'); // https requires key and permission files
-const { Server } = require('socket.io');
+import express from 'express';
+import { createServer } from 'http'; // https requires key and permission files
+import { Server, Socket } from 'socket.io';
 
-const webpack = require('webpack');
-const webpackConfig = require('../../webpack.dev');
-const webpackDevMiddleware = require('webpack-dev-middleware');
+import webpack from 'webpack';
+const webpackConfig = require('../../webpack.dev.js');
+import webpackDevMiddleware from 'webpack-dev-middleware';
 
-const { MSG_TYPES } = require('../shared/constants');
-const ValidationUtils = require('./utils/ValidationUtils');
-const IdentityManager = require('./identityManager');
-const MessageQueue = require('./messageQueue');
+import MessageTypes from '../shared/Constants';
+import ValidationUtils from './utils/ValidationUtils';
+import IdentityManager from './IdentityManager';
+import SocketProfile from '../shared/SocketProfile';
 
 const app = express();
 const port = 3000;
 const httpServer = createServer(app);
-const messageQueue = new MessageQueue((packet) => updateTick(packet));
 const io = new Server(httpServer, {
     cors: {
         origin: '*', // provide legitimate server address
@@ -36,19 +35,19 @@ function initializeServer() {
         app.use(express.static('dist'));
     }
 
-    io.on(MSG_TYPES.CONNECTION, onConnection);
+    io.on(MessageTypes.CONNECTION, onConnection);
 }
 
-function onConnection(socket) {
+function onConnection(socket: Socket) {
     console.log(`[+] Connection occurred with ${socket.id}`);
 
-    socket.on(MSG_TYPES.INITIALIZE, (socketProfile, callback) => setSocketProfile(socket, socketProfile, callback));
-    socket.on(MSG_TYPES.DISCONNECT, () => onDisconnect(socket));
-    socket.on(MSG_TYPES.PING, (callback) => callback());
-    socket.on(MSG_TYPES.MESSAGE, (message) => onMessage(socket, message));
+    socket.on(MessageTypes.INITIALIZE, (socketProfile, callback) => setSocketProfile(socket, socketProfile, callback));
+    socket.on(MessageTypes.DISCONNECT, () => onDisconnect(socket));
+    socket.on(MessageTypes.PING, (callback) => callback());
+    socket.on(MessageTypes.MESSAGE, (message) => onMessage(socket, message));
 }
 
-function setSocketProfile(socket, socketProfile, callback) {
+function setSocketProfile(socket: Socket, socketProfile: SocketProfile, callback: (err?: string) => void) {
     if (!ValidationUtils.validateSocketProfile(socketProfile)) {
         console.log(`[X] Invalid socket profile from ${socket.id}`);
         callback('INVALID');
@@ -62,21 +61,20 @@ function setSocketProfile(socket, socketProfile, callback) {
     console.log(`[ ] Client '${socketProfile.nickname}' (${socket.id}) was synced`);
 }
 
-function onDisconnect(socket) {
+function onDisconnect(socket: Socket) {
     identityManager.removeSocketInfo(socket.id);
     console.log(`[-] Connection halted with ${socket.id}`);
 }
 
-function onMessage(socket, message) {
+function onMessage(socket: Socket, message: string) {
     console.log(`${socket.id} queued: '${message}'`);
-    messageQueue.queueMessage(message);
 }
 
-function updateTick(packet) {
-    io.emit(MSG_TYPES.UPDATE, packet);
+function updateTick(packet: Uint16Array) {
+    io.emit(MessageTypes.UPDATE, packet);
 }
 
-function terminateSocket(socket) {
+function terminateSocket(socket: Socket) {
     socket.disconnect();
 }
 

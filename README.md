@@ -19,9 +19,11 @@ $ npm run develop
 
 This installs all necessary dependencies in relative *node_modules* folder and starts the application that listens for connections. Proceed to [localhost:3000](localhost:3000) to open your client. All your changes on client files will automatically be updated once you refresh the page. (This is done thanks to *webpack-dev-middleware* library)
 
+Ensure tests are **passing** after introducing breaking changes as this will **prevent** building application in a production environment later on. To run tests, execute: ```npm run test```
+
 ## Production
 
-To run this application on a production setting, use:
+The application can be built for a production environment only if all the tests are green. This step is automatically executed together with the build script. To run this application on a production setting, use:
 
 ```bash
 $ npm install

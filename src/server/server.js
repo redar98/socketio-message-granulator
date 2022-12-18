@@ -7,7 +7,7 @@ const webpackConfig = require('../../webpack.dev');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 
 const { MSG_TYPES } = require('../shared/constants');
-const SocketProfile = require('../shared/socketProfile');
+const ValidationUtils = require('./utils/ValidationUtils');
 const IdentityManager = require('./identityManager');
 const MessageQueue = require('./messageQueue');
 
@@ -49,7 +49,7 @@ function onConnection(socket) {
 }
 
 function setSocketProfile(socket, socketProfile, callback) {
-    if (!SocketProfile.validate(socketProfile)) {
+    if (!ValidationUtils.validateSocketProfile(socketProfile)) {
         console.log(`[X] Invalid socket profile from ${socket.id}`);
         callback('INVALID');
         terminateSocket(socket);

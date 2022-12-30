@@ -32,3 +32,7 @@ $ npm start
 ```
 
 This will create minified version of files in a ./dist folder and start the server on port 3000.
+
+### Bundle Analyzer
+
+This project already uses webpack which adds bundle analyzer support. If there is a suspicion that bundle is too big because of a recently added dependency, feature or refactoring, start by generating a *stats.json* file using command ```npm run report```. Ensure total bundle size (unminified) does not exceed **250kb**.

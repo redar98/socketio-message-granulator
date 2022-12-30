@@ -120,3 +120,6 @@ dist
 
 # prod env files
 dist/
+
+# webpack-bundle-analyzer reports
+stats.json

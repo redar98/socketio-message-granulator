@@ -8,7 +8,8 @@
     "start": "cross-env NODE_ENV=production ts-node src/server/Server.ts",
     "develop": "cross-env NODE_ENV=development ts-node src/server/Server.ts",
     "debug": "cross-env NODE_ENV=development DEBUG=engine,socket.io:client*,socket.io:server* ts-node src/server/Server.ts",
-    "test": "jest"
+    "test": "jest",
+    "report": "webpack --config webpack.prod.js --profile --json > stats.json && npx webpack-bundle-analyzer stats.json dist/"
   },
   "author": "Denis Dincer",
   "license": "MIT",

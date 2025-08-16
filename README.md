@@ -31,7 +31,7 @@ $ npm run build
 $ npm start
 ```
 
-This will create minified version of files in a ./dist folder and start the server on port 3000.
+This will create minified version of files in a ./dist/client folder and start the server on port 3000.
 
 ### Bundle Analyzer
 

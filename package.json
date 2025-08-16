@@ -2,38 +2,38 @@
   "name": "socketio-msg-server",
   "version": "1.0.0",
   "description": "A client-server application using socket.io that receives a message and sends its characters back one by one in an interval",
-  "main": "./src/server/Server.ts",
   "scripts": {
-    "build": "webpack --config webpack.prod.js",
-    "start": "cross-env NODE_ENV=production ts-node src/server/Server.ts",
-    "develop": "cross-env NODE_ENV=development ts-node src/server/Server.ts",
-    "debug": "cross-env NODE_ENV=development DEBUG=engine,socket.io:client*,socket.io:server* ts-node src/server/Server.ts",
+    "build:server": "tsc -p tsconfig.json",
+    "build:client": "webpack --config webpack.prod.js",
+    "build": "npm run build:server && npm run build:client",
+    "start": "cross-env DUMMY_ENV_VAR=production node dist/server/server/ServerProd.js",
+    "develop": "cross-env DUMMY_ENV_VAR=development ts-node src/server/ServerDev.ts",
+    "debug": "cross-env DUMMY_ENV_VAR=development DEBUG=engine,socket.io:client*,socket.io:server* ts-node src/server/ServerDev.ts",
     "test": "jest",
-    "report": "webpack --config webpack.prod.js --profile --json > stats.json && npx webpack-bundle-analyzer stats.json dist/"
+    "report": "webpack --config webpack.prod.js --profile --json > stats.json && npx webpack-bundle-analyzer stats.json dist/client/"
   },
   "author": "Denis Dincer",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^5.1.0",
     "socket.io": "^4.3.1",
-    "socket.io-client": "^4.3.2",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^4.9.1"
+    "socket.io-client": "^4.3.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.15",
-    "@types/jest": "^29.2.4",
-    "cross-env": "^7.0.3",
-    "css-loader": "^6.5.1",
-    "css-minimizer-webpack-plugin": "^3.1.1",
-    "html-webpack-plugin": "^5.5.0",
-    "jest": "^29.3.1",
-    "mini-css-extract-plugin": "^2.4.4",
-    "ts-jest": "^29.0.3",
-    "ts-loader": "^9.4.2",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.4",
-    "webpack-dev-middleware": "^5.2.1",
-    "webpack-remove-debug": "^0.1.0"
+    "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "cross-env": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.2",
+    "html-webpack-plugin": "^5.6.4",
+    "jest": "^30.0.5",
+    "mini-css-extract-plugin": "^2.9.4",
+    "ts-jest": "^29.4.1",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "webpack": "^5.101.2",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-middleware": "^7.4.2"
   }
 }
